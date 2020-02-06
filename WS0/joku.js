@@ -1,17 +1,16 @@
 var http = require("http");
-http.createServer(function (request, response) {
-	response.writeHead(200, {'Content-Type': 'text/html'});
-	if (request.url === "/"){
-response.write("Olet saapunut palvelimen juureen.");
-} 
-else if (request.url === "/helloworld"){
-response.write("Nyt yrität hakea Hoi Maailmaa!");
-} else if (request.url === "/homepage"){
-response.write("<h1>HOMEPAGE</h1>");
-}
+http
+  .createServer(function(request, response) {
+    response.writeHead(200, { "Content-Type": "text/html" });
+    if (request.url === "/") {
+      response.write("Olet saapunut palvelimen juureen.");
+    } else if (request.url === "/helloworld") {
+      response.write("Nyt yrität hakea Hei Maailmaa!");
+    } else if (request.url === "/homepage") {
+      response.write("<h1>HOMEPAGE</h1>");
+    }
 
-
-response.write(`<style>
+    response.write(`<style>
 table, th, td {
 	border: 1px solid black;
 	border-collapse: collapse;
@@ -36,5 +35,6 @@ table, th, td {
 </tr>
 </table>
 `);
-response.end('<h1>Hello World</h1>');
-}).listen(8081);
+    response.end("<h1>Hello World</h1>");
+  })
+  .listen(8081);

@@ -1,42 +1,36 @@
 var http = require("http");
 var fs = require("fs");
+var axios = require ("axios");
 
 http
-  .createServer(function(request, response) {
-    response.writeHead(200, { "Content-Type": "text/html" });
+  .createServer(function(request, res) {
+    res.writeHead(200, { "Content-Type": "text/html" });
 
-    http
-      .get("http://omdbapi.com/?s=star+wars&apikey=cded8a70", resp => {
-        let data = "";
-
-        // A chunk of data has been recieved.
-        resp.on("data", chunk => {
-          data += chunk;
-        });
-
-        // The whole response has been received. Print out the result.
-        resp.on("end", () => {
-          console.log(JSON.parse(data));
-          for (var i = 0; i < data.length; i++) {
-            response.write(data[i]);
-          }
-
-          /*var output = JSON.stringify(data);
-          response.write("<table border='1'>");
-          for (var i = 0; i < data.length; i++) {
-            response.write("<tr>");
-            response.write("<td>" + output[i].Title + "</td>");
-            response.write("<td>" + output[i].Year + "</td>");
-            response.write("<td>" + output[i].imdbID + "</td>");
-            response.write("<td>" + output[i].Type + "</td>");
-            response.write("<td>" + output[i].Poster + "</td>");
-            response.write("</tr>");
-          }*/
-        });
-      })
-      .on("error", err => {
-        console.log("Error: " + err.message);
-      });
+    const promise = axios
+    .get("http://omdbapi.com/?s=star+wars&apikey=cded8a70")
+    .then(response => {
+        const data = response.data;
+        console.log(data);
+        var html = parse(data);
+        res.write(html);
+    });
+    console.log(promise);
+    
+    
   })
   .listen(8081);
 console.log("Server running at http://127.0.0.1:8081/");
+
+function parse(data) {
+    var html = "<table border='1'>";
+    for (var i = 0; i < 10; i++) {
+        html += "<tr>";
+        html += "<td>" + data.Search[i].Title + "</td>";
+        html += "<td>" + data.Search[i].Year + "</td>";
+        html += "<td>" + data.Search[i].imdbID + "</td>";
+        html += "<td>" + data.Search[i].Type + "</td>";
+        html += "<td><img src='" + data.Search[i].Poster + "'></td>";
+        html += "</tr>";
+      }
+      return html;
+}
